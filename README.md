@@ -12,6 +12,12 @@ Docker Engine is an open source containerization technology for building and con
 - APIs which specify interfaces that programs can use to talk to and instruct the Docker daemon.
 - A command line interface (CLI) client docker.
 
+#### What is Image ?
+
+#### What is Container ?
+
+#### What is Volume ?
+
 ## Commands:
 
 `docker run hello-world`
@@ -57,3 +63,19 @@ Docker Engine is an open source containerization technology for building and con
 `docker pull ubuntu`
 
 - clone the image ubuntu from docker hub
+
+`docker start my-ubuntu`
+
+- start a container all ready build
+
+`docker stop my-ubuntu`
+
+- stop a container all ready urn
+
+`docker run -p 8080:80 nginx`
+
+- -p = publish ports (Take a port from the container and expose it on my host machine) this concept called Port Mapping
+
+`docker run -d nginx`
+
+- -d = detached mode (run the container in the background, The container keeps running, but your terminal does not get attached to it)
