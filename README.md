@@ -14,6 +14,10 @@ Docker Engine is an open source containerization technology for building and con
 
 ## Commands:
 
+`docker run hello-world`
+
+- Create a container from image hello-world and run it
+
 `docker container ls`
 
 - Shows only running containers
@@ -25,3 +29,31 @@ Docker Engine is an open source containerization technology for building and con
 `docker container ls -a or -la`
 
 - -a = all containers (running or stopped)
+
+`docker run --name dahani hello-world`
+
+- --name = Rename the container
+
+`docker rm dahani`
+
+- rm = Remove a container
+
+`docker rmi image-dahani`
+
+- rmi = Remove a image
+
+`docker ps`
+
+- is like docker container ls with all flags (the diff between them is docker ps is older than docker container ls)
+
+`docker image ls`
+
+- show all images
+
+`docker images`
+
+- is like docker image ls with all flags (the diff between them is docker images is older than docker image ls)
+
+`docker pull ubuntu`
+
+- clone the image ubuntu from docker hub
