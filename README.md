@@ -14,9 +14,17 @@ Docker Engine is an open source containerization technology for building and con
 
 #### What is Image ?
 
+A Docker Image is a lightweight, standalone, and executable software package that includes everything needed to run an application: the code, a runtime, system tools, libraries, and settings.
+
+The docker image includes the following to run a piece of software. Docker images are specific to both the operating system (OS) and the CPU architecture for which they were built.
+
 #### What is Container ?
 
+Containers are lightweight piece of software that contains all the code, libraries, and dependencies that the application needs to run. Containers do not have their own operating system, they get resources from the host operating system. Because they do not have an operating system of their own they are lightweight. They are also easily portable as they contain all the libraries and the dependencies to run the application.
+
 #### What is Volume ?
+
+Docker Volumes are a way to store data outside of a container’s filesystem so that the data isn’t lost when the container stops or is deleted. By default, anything you create inside a container is temporary, but with volumes, you can keep files (like databases, logs, or configs) in a safe and reusable location managed by Docker.
 
 ## Commands:
 
