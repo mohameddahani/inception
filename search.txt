@@ -1,0 +1,5 @@
+docker daemon
+docker file
+docker registry (public or private)
+docker build -t 
+docker compose

@@ -78,7 +78,11 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 
 `docker stop my-ubuntu`
 
-- stop a container all ready urn
+- stop a container all ready run
+
+`docker restart my-ubuntu`
+
+- restart a container all ready run
 
 `docker run -p 8080:80 nginx`
 
