@@ -12,6 +12,11 @@ Docker Engine is an open source containerization technology for building and con
 - APIs which specify interfaces that programs can use to talk to and instruct the Docker daemon.
 - A command line interface (CLI) client docker.
 
+
+#### What is Docker daemon (dockerd) ?
+
+need a definition pls :(
+
 #### What is Image ?
 
 A Docker Image is a lightweight, standalone, and executable software package that includes everything needed to run an application: the code, a runtime, system tools, libraries, and settings.

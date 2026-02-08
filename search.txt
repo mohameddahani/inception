@@ -3,3 +3,6 @@ docker file
 docker registry (public or private)
 docker build -t 
 docker compose
+
+Docker uses an HTTP-based REST API to communicate between the Docker client and the Docker daemon, usually over a Unix socket, and optionally over TCP.
+we can send a http request to the socket using curl to see the running container => curl --unix-socket /var/run/docker.sock http://localhost/containers/json
