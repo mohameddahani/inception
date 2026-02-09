@@ -6,3 +6,11 @@ docker compose
 
 Docker uses an HTTP-based REST API to communicate between the Docker client and the Docker daemon, usually over a Unix socket, and optionally over TCP.
 we can send a http request to the socket using curl to see the running container => curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+
+containerd = page 47 - 48
+shim = page 47
+runc = page 47 - 48
+
+containerd :  (pronounced container-dee). Its sole purpose in life was to manage container lifecycle operations — start | stop | pause | rm....
+
+run : runc has a single purpose in life — create containers. And it’s damn good at it.

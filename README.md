@@ -6,12 +6,11 @@ Docker is an open platform for developing, shipping, and running applications. D
 
 #### What is Docker Engine ?
 
-Docker Engine is an open source containerization technology for building and containerizing your applications. Docker Engine acts as a client-server application with:
+The Docker engine is the core sofware that runs and manages containers. Docker Engine acts as a client-server application with:
 
 - A server with a long-running daemon process dockerd.
 - APIs which specify interfaces that programs can use to talk to and instruct the Docker daemon.
 - A command line interface (CLI) client docker.
-
 
 #### What is Docker daemon (dockerd) ?
 
@@ -96,3 +95,13 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 `docker run -d nginx`
 
 - -d = detached mode (run the container in the background, The container keeps running, but your terminal does not get attached to it)
+
+`docker image build -t test_image:latest .`
+
+- this command build an image from Dockerfile it use buildx that also use buildKit
+- -t = is use to name the image that you build
+- . is mean the path of Dockerfile
+
+`docker build -t test_image:latest .`
+
+- this command build is like docker image build -t test_image:latest .
