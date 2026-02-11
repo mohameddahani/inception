@@ -16,6 +16,14 @@ The Docker engine is the core sofware that runs and manages containers. Docker E
 
 need a definition pls :(
 
+#### What is containerd ?
+
+(pronounced container-dee). Its sole purpose in life was to manage container lifecycle operations — start | stop | pause | rm....
+
+#### What is runc ?
+
+runc has a single purpose in life — create containers. And it’s damn good at it.
+
 #### What is Image ?
 
 A Docker Image is a lightweight, standalone, and executable software package that includes everything needed to run an application: the code, a runtime, system tools, libraries, and settings.
@@ -59,6 +67,12 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 `docker rmi image-dahani`
 
 - rmi = Remove a image
+
+`docker rmi $(docker images -q) -f`
+
+- remove all images
+- $(docker images -q) = show id of all images
+- -f = force
 
 `docker ps`
 
@@ -105,3 +119,7 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 `docker build -t test_image:latest .`
 
 - this command build is like docker image build -t test_image:latest .
+
+`docker search ubuntu`
+
+- this command lets you search Docker Hub from the CLI

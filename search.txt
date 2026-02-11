@@ -13,4 +13,329 @@ runc = page 47 - 48
 
 containerd :  (pronounced container-dee). Its sole purpose in life was to manage container lifecycle operations — start | stop | pause | rm....
 
+shim : Keeps the container alive, If dockerd crashes => container keeps running shim is still there
+
 run : runc has a single purpose in life — create containers. And it’s damn good at it.
+
+
+docker CLI
+   |
+   |  HTTP / REST
+   |  (over Unix socket or TCP)
+   v
+Docker Engine API (dockerd)
+   |
+   |  gRPC
+   v
+containerd
+   |
+   |  gRPC
+   v
+runc (OCI runtime)
+
+
+
+7️⃣ What is a dangling image?
+When you rebuild an image with the same tag:
+
+Example:
+
+docker build -t app:latest .
+
+
+Then rebuild again:
+
+docker build -t app:latest .
+
+
+Docker:
+
+Creates a new image
+
+Moves tag app:latest to new image
+
+Old image loses its tag
+
+Now old image becomes:
+
+<none>:<none>
+
+
+That is a dangling image.
+
+View dangling images
+docker image ls --filter dangling=true
+
+Remove them
+docker image prune
+
+
+Add -a to remove all unused images.
+
+
+
+
+Images and layers:
+A Docker image is just a bunch of loosely-connected read-only layers, with each layer comprising one or more
+files.
+
+===========> to know how many layer we have in image we need to pull one as example and see how many have this word "Pull complete" the number of word is the also number of layers
+example: docker image pull ubuntu:latest | grep "Pull complete" | wc -l
+you can also do this command => docker image inspect ubuntu:latest =======> this command  Display detailed information of an image =====> after that you can search on layers and count how many layers we have in this image
+we have a also this command ====> docker image history ubuntu:latest this Show the history of an image and you can see the layers of image ====> However, it shows
+the build history of an image and is not a strict list of layers in the final image.
+
+
+🧱 1️⃣ The Base Layer (Ubuntu 20.04)
+
+You start with:
+
+FROM ubuntu:20.04
+
+
+This is your base layer.
+
+Important:
+Ubuntu itself is NOT one single layer.
+It is already built from multiple internal layers.
+
+But logically, for your image, we treat it as:
+
+Layer 1 → Ubuntu 20.04
+
+
+This layer contains:
+
+/bin
+
+/usr
+
+/lib
+
+system packages
+
+core Linux files
+
+It is read-only.
+
+🧱 2️⃣ Add Python (Second Layer)
+
+Then your Dockerfile has:
+
+RUN apt update && apt install -y python3
+
+
+This creates a new layer on top.
+
+This layer contains:
+
+New Python binaries
+
+Python libraries
+
+Updated apt metadata
+
+Modified filesystem content
+
+Now your image looks like this:
+
+Layer 2 → Python installed
+Layer 1 → Ubuntu 20.04
+
+
+Important concept:
+
+👉 Layer 2 does NOT copy all of Ubuntu.
+👉 It only stores the filesystem changes.
+
+This is extremely important.
+
+🧱 3️⃣ Add Application Source Code
+
+Then:
+
+COPY app.py /app/app.py
+
+
+This creates another layer.
+
+Now your image:
+
+Layer 3 → app.py
+Layer 2 → Python installed
+Layer 1 → Ubuntu
+
+
+So you now have:
+
+3 layers (oversimplified example).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🧠 Step 1 — Imagine This
+
+You download a movie file.
+
+If someone changes even one pixel, the file becomes different.
+
+How can you prove it’s the exact same file?
+
+👉 You calculate a hash.
+
+That hash is like:
+
+A BIG UNIQUE FINGERPRINT
+
+
+If file changes → fingerprint changes.
+
+That fingerprint = digest.
+
+🐳 Now In Docker
+
+When you pull:
+
+docker pull alpine:latest
+
+
+You are asking for:
+
+Repository: alpine
+
+Tag: latest
+
+But here is the problem:
+
+⚠️ latest can change.
+
+Today it points to version 1.
+Tomorrow it may point to version 2.
+
+🎯 So What Is Digest?
+
+Digest is the real identity of the image.
+
+Example:
+
+alpine@sha256:abc123....
+
+
+That long sha256:... is the digest.
+
+It is calculated from the image content.
+
+If anything changes in the image → digest changes.
+
+So digest = exact version forever.
+
+🆚 Tag vs Digest (Very Simple)
+
+Think like this:
+
+Tag = nickname
+Digest = national ID card number
+
+Nicknames can change.
+ID number never changes.
+
+📦 Example From Real Life
+
+Run:
+
+docker pull alpine
+
+
+You will see something like:
+
+Digest: sha256:9cacb71397b...
+
+
+That means:
+
+The real identity of the image you downloaded is:
+
+sha256:9cacb71397b...
+
+
+Even if latest changes tomorrow,
+that digest will always point to that exact image.
+
+
+
+🔴 Problem 1: Tags Can Be Changed
+
+Imagine this timeline:
+
+Day 1
+
+You run:
+
+docker pull myapp:latest
+
+
+latest → points to image A
+Digest = sha256:AAA
+
+Everything works fine.
+
+Day 5
+
+The developer pushes a new version and re-tags it:
+
+myapp:latest → now points to image B
+Digest = sha256:BBB
+
+
+You run:
+
+docker pull myapp:latest
+
+
+Now you get image B.
+
+⚠️ Same tag.
+⚠️ Different image.
+⚠️ Different behavior.
+
+This is dangerous in production.
+
+🔒 Why Digest Solves This
+
+Digest is calculated from the image content using SHA256.
+
+That means:
+
+If even ONE BIT changes → digest changes completely.
+
+Example:
+
+Image A → sha256:AAA
+Image B → sha256:BBB
+
+
+They can NEVER have the same digest unless they are identical.
+
+So if you pull using digest:
+
+docker pull myapp@sha256:AAA
+
+
+You are guaranteed to get EXACTLY image A.
+
+Forever.
+
+
+
