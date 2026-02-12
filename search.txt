@@ -18,6 +18,26 @@ shim : Keeps the container alive, If dockerd crashes => container keeps running 
 run : runc has a single purpose in life — create containers. And it’s damn good at it.
 
 
+Who runc is work ?
+
+Here is what runc does:
+
+Sets up namespaces (PID, network, mount, etc.)
+
+Applies cgroups (CPU/memory limits)
+
+Sets up root filesystem
+
+Executes the container process
+
+runc is the low-level runtime that talks directly to the Linux kernel.
+
+
+
+
+
+
+
 docker CLI
    |
    |  HTTP / REST

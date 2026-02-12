@@ -74,6 +74,12 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 - $(docker images -q) = show id of all images
 - -f = force
 
+`docker rm $(docker ps -aq) -f`
+
+- remove all containers
+- $(docker ps -aq) = show id of all containers
+- -f = force
+
 `docker ps`
 
 - is like docker container ls with all flags (the diff between them is docker ps is older than docker container ls)
@@ -123,3 +129,11 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 `docker search ubuntu`
 
 - this command lets you search Docker Hub from the CLI
+
+
+## difference between a VM and a container
+
+- the big difference between a
+VM and a container is that containers are faster and more lightweight — instead of running a full-blown OS like
+a VM, containers share the OS/kernel with the host they’re running on. It’s also common for containers to be
+based on minimalist images that only include software and dependencies required by the application.
