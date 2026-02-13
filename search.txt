@@ -94,6 +94,19 @@ Add -a to remove all unused images.
 
 
 
+WHAT IS IMAGE LAYER?
+A Docker image layer is a read-only filesystem snapshot created by each instruction in a Dockerfile. Layers are stacked on top of each other to form the final image, and the combination of all layers appears as a single unified filesystem in the container.
+
+Key points in short:
+
+Layers are read-only.
+
+Layers are reusable across images.
+
+The top writable layer exists only in running containers.
+
+Layers make builds faster and storage efficient.
+
 
 Images and layers:
 A Docker image is just a bunch of loosely-connected read-only layers, with each layer comprising one or more

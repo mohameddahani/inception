@@ -38,6 +38,10 @@ Containers are lightweight piece of software that contains all the code, librari
 
 Docker Volumes are a way to store data outside of a container’s filesystem so that the data isn’t lost when the container stops or is deleted. By default, anything you create inside a container is temporary, but with volumes, you can keep files (like databases, logs, or configs) in a safe and reusable location managed by Docker.
 
+#### What is Dockerfile ?
+
+A Dockerfile is the starting point for creating a container image — it describes an application and tells Docker how to build it into an image.
+
 ## Commands:
 
 `docker run hello-world`
