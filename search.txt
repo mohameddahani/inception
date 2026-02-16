@@ -94,6 +94,42 @@ Add -a to remove all unused images.
 
 
 
+
+EXPLAIN THIS DOCKERFILE:
+# 1️⃣ Base image 
+FROM node:20-alpine 
+# 2️⃣ Set working directory 
+WORKDIR /app 
+# 3️⃣ Copy project files 
+COPY app.js . 
+# 4️⃣ Command to run 
+CMD ["node app.js && ls"]
+
+Dockerfile Explanation
+
+FROM node:20-alpine Defines the base image. It uses Node.js version 20
+on Alpine Linux. This provides the operating system and Node.js runtime
+needed to run the application.
+
+WORKDIR /app Sets the working directory inside the container to /app.
+All following commands will run in this directory. Docker creates it
+automatically if it does not exist.
+
+COPY app.js . Copies the file app.js from the host machine into the
+container’s working directory (/app). This adds the application code to
+the image.
+
+CMD [“node app.js && ls”] Defines the default command that runs when the
+container starts. However, this syntax is incorrect for multiple
+commands because it does not use a shell. The correct form should be:
+CMD [“node”, “app.js”] or CMD sh -c “node app.js && ls”
+
+Summary: - FROM: defines the base environment - WORKDIR: sets the
+working directory - COPY: adds files into the image - CMD: defines the
+startup command
+
+
+
 WHAT IS IMAGE LAYER?
 A Docker image layer is a read-only filesystem snapshot created by each instruction in a Dockerfile. Layers are stacked on top of each other to form the final image, and the combination of all layers appears as a single unified filesystem in the container.
 
@@ -369,6 +405,66 @@ docker pull myapp@sha256:AAA
 You are guaranteed to get EXACTLY image A.
 
 Forever.
+
+
+
+What is docker compose?
+Docker Compose is a tool for defining and running multi-container applications. It is the key to unlocking a streamlined and efficient development and deployment experience.
+
+Compose simplifies the control of your entire application stack, making it easy to manage services, networks, and volumes in a single YAML configuration file. Then, with a single command, you create and start all the services from your configuration file.
+
+Compose works in all environments - production, staging, development, testing, as well as CI workflows. It also has commands for managing the whole lifecycle of your application:
+
+Start, stop, and rebuild services
+View the status of running services
+Stream the log output of running services
+Run a one-off command on a service
+
+
+
+
+
+
+
+
+What is YML file ?
+YAML is a subset of JSON, so you can also use JSON. 
+
+
+
+
+
+
+
+Explain Docker Compose File;
+
+
+version: "3.8"
+
+services:
+  web-fe:
+    build: .
+    command: python app.py
+    ports:
+      - target: 5000
+        published: 5000
+    networks:
+      - counter-net
+    volumes:
+      - type: volume
+        source: counter-vol
+        target: /code
+
+  redis:
+    image: redis:alpine
+    networks:
+      - counter-net
+
+networks:
+  counter-net:
+
+volumes:
+  counter-vol:
 
 
 

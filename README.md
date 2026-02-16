@@ -42,6 +42,16 @@ Docker Volumes are a way to store data outside of a container’s filesystem so 
 
 A Dockerfile is the starting point for creating a container image — it describes an application and tells Docker how to build it into an image.
 
+#### What is Docker Compose ?
+
+Docker Compose is a tool provided by Docker that allows you to define, configure, and run multiple containers as a single application using a YAML file (docker-compose.yml).
+
+It lets you manage services, networks, and volumes in one place, and start or stop the entire application with a single command.
+
+Example: You can use Docker Compose to run a frontend, backend, and database together as one system.
+
+
+
 ## Commands:
 
 `docker run hello-world`
