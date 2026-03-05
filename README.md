@@ -14,7 +14,10 @@ The Docker engine is the core sofware that runs and manages containers. Docker E
 
 #### What is Docker daemon (dockerd) ?
 
-need a definition pls :(
+The Docker daemon (dockerd) is the main background process that runs on the host machine and controls everything in Docker.
+
+It is the central brain of Docker.
+Whenever you run a Docker command, the daemon receives the request and executes it.
 
 #### What is containerd ?
 

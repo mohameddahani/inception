@@ -11,11 +11,27 @@ containerd = page 47 - 48
 shim = page 47
 runc = page 47 - 48
 
+
+
+
+
+
+
+
+docker daemon : Docker daemon is the main service that manages Docker objects and communicates with containerd to create and manage containers
+
 containerd :  (pronounced container-dee). Its sole purpose in life was to manage container lifecycle operations — start | stop | pause | rm....
 
 shim : Keeps the container alive, If dockerd crashes => container keeps running shim is still there
 
 run : runc has a single purpose in life — create containers. And it’s damn good at it.
+
+
+
+
+
+
+
 
 
 Who runc is work ?
