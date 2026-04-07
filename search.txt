@@ -34,7 +34,7 @@ run : runc has a single purpose in life — create containers. And it’s damn g
 
 
 
-Who runc is work ?
+Whow runc is work ?
 
 Here is what runc does:
 
@@ -254,6 +254,22 @@ Layer 1 → Ubuntu
 So you now have:
 
 3 layers (oversimplified example).
+
+
+
+
+🧠 1️⃣ Metadata (cache.db)
+
+Metadata is basically information about your cached layers, not the actual files themselves. Think of it like a recipe book that tells Docker how to reuse a layer.
+
+
+
+🧠 2️⃣ OverlayFS (containerd-overlayfs/)
+
+OverlayFS is a filesystem driver Docker uses to store layers efficiently.
+
+Layers are stored as differences (diffs), not full copies
+Multiple layers can share the same base files, only storing changes
 
 
 
