@@ -147,6 +147,13 @@ Example: You can use Docker Compose to run a frontend, backend, and database tog
 
 - this command lets you search Docker Hub from the CLI
 
+`docker run --name my_ubuntu -it my_ubuntu:latest bash`
+
+- this command lets you to open terminal inside container
+- i = interactive → keeps input (keyboard) open so you can type commands
+- t = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
+- bash = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
+
 
 ## difference between a VM and a container
 
