@@ -53,6 +53,10 @@ It lets you manage services, networks, and volumes in one place, and start or st
 
 Example: You can use Docker Compose to run a frontend, backend, and database together as one system.
 
+#### What is Docker Network ?
+
+Container networking refers to the ability for containers to connect to and communicate with each other, and with non-Docker network services.
+
 
 
 ## Commands:
@@ -153,6 +157,28 @@ Example: You can use Docker Compose to run a frontend, backend, and database tog
 - i = interactive → keeps input (keyboard) open so you can type commands
 - t = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
 - bash = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
+
+`docker network ls`
+
+- this command is show list of networks
+
+`docker network inspect bridge`
+
+- this command is show all informations about network like in this command is bridge
+
+`docker container inspect my_ubuntu`
+
+- this command is show all informations about container
+
+`docker network create my-network`
+
+- this command create a network
+
+`docker run --rm -d -p 8080:80 --network=my-network my_nginx:latest`
+
+- this command add a container to a specific network
+- --rm this will remove the container after she stop
+- --network=my-network this flag make you chose the network
 
 
 ## difference between a VM and a container
