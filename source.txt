@@ -1,1 +1,2 @@
 install wordpress + php-fpm => https://forumweb.hosting/blog/deploying-a-wordpress-site-on-an-ubuntu-vps-with-nginx-php-fpm-and-mariadb/
+docker-compose
