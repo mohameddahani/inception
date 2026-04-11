@@ -1,24 +1,24 @@
 # Base image
-FROM alpine:latest
+FROM debian:13
 
 # Install PHP + PHP-FPM + extensions needed for WordPress
-RUN apk update && apk add \
+RUN apt update -y && apt install -y \
     php \
     php-fpm \
-    php-mysqli \
-    php-json \
-    php-session \
-    php-opcache \
-    php-gd \
-    php-curl \
-    php-xml \
-    php-mbstring \
+    php-mysql \
+    # php-json \
+    # php-curl \
+    # php-gd \
+    # php-xml \
+    # php-mbstring \
+    # php-zip \
     wget \
     tar \
     # Create a generic symlink for whatever php-fpm8x version was installed
-    && ln -s /usr/sbin/php-fpm8* /usr/sbin/php-fpm
+    && ln -s /usr/sbin/php-fpm8* /usr/sbin/php-fpm \
+    && apt clean
 
-# Create directory for WordPress
+# Set working directory
 WORKDIR /var/www/html
 
 # Download WordPress
@@ -27,8 +27,8 @@ RUN wget https://wordpress.org/latest.tar.gz \
     && mv wordpress/* . \
     && rm -rf wordpress latest.tar.gz
 
-# ! CONF php-fpm to listen on other containers
+# Expose PHP-FPM port
+EXPOSE 9000
 
-# Run PHP-FPM
-# -F makes php-fpm run in foreground so the Docker container keeps running.
+# Run PHP-FPM in foreground
 CMD ["php-fpm", "-F"]

@@ -11,10 +11,10 @@ services:
     restart: always
     ports:
       - "8080:80"
-
-
-
-
-
-# depends_on:
-      # - backend
+  wordpress:
+    depends_on:
+      - mariadb
+    build: ./requirements/wordpress
+    image: my-wordpress
+    container_name: my-wordpress
+    restart: always
