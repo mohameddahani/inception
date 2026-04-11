@@ -1,5 +1,5 @@
 # Base image
-FROM debian:latest
+FROM debian:13
 
 # Work directory
 WORKDIR /mariadb

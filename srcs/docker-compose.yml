@@ -4,3 +4,17 @@ services:
     image: my-mariadb
     container_name: my-mariadb
     restart: always
+  nginx:
+    build: ./requirements/nginx
+    image: my-nginx
+    container_name: my-nginx
+    restart: always
+    ports:
+      - "8080:80"
+
+
+
+
+
+# depends_on:
+      # - backend

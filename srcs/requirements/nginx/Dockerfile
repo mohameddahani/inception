@@ -1,12 +1,13 @@
 # Base image
-FROM alpine:latest
+FROM debian:13
 
 # Install nginx
-RUN apk update && apk add nginx
+RUN apt update && \
+    apt install -y nginx
 
-# Copy nginx configuration files
-COPY ./conf /etc/nginx/conf.d/
-COPY ./tools .
+# Copy files from host machine to image
+# COPY ./conf ./conf
+# COPY ./tools ./tools
 
 # Expose HTTP port
 EXPOSE 80
