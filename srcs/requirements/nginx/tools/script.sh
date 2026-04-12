@@ -7,10 +7,10 @@ set -e
 echo "Configuring Nginx..."
 
 # Remove default config
-rm -f /etc/nginx/sites-enabled/default
+# rm -f /etc/nginx/sites-enabled/default
 
 # Copy your WordPress config as default
-cp /etc/conf/wordpress.conf /etc/nginx/sites-enabled/default
+cp /etc/conf/wordpress.conf /etc/nginx/nginx.conf
 
 # Print message
 echo "Starting Nginx..."
