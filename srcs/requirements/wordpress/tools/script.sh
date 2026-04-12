@@ -27,6 +27,8 @@ echo "Wordpress is Downloaded Successfully !"
 sed -i 's|listen = /run/php/php.*-fpm.sock|listen = 0.0.0.0:9000|' \
 /etc/php/*/fpm/pool.d/www.conf
 
+# Print Message
 echo "Starting PHP-FPM..."
+
 # Run PHP-FPM in foreground
 exec php-fpm -F

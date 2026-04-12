@@ -3,7 +3,7 @@ name: inception
 services:
   mariadb:
     build: ./requirements/mariadb
-    image: my-mariadb
+    image: my-mariadb:inception
     container_name: my-mariadb
     restart: always
 
@@ -11,7 +11,7 @@ services:
     depends_on:
       - mariadb
     build: ./requirements/wordpress
-    image: my-wordpress
+    image: my-wordpress:inception
     container_name: my-wordpress
     restart: always
     volumes:
@@ -19,7 +19,7 @@ services:
 
   nginx:
     build: ./requirements/nginx
-    image: my-nginx
+    image: my-nginx:inception
     container_name: my-nginx
     restart: always
     ports:

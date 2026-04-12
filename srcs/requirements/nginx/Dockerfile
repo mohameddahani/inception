@@ -1,5 +1,5 @@
 # Base image
-FROM debian:13
+FROM debian:12
 
 # Install nginx
 RUN apt update && \

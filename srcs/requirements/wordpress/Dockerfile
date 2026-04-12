@@ -1,17 +1,11 @@
 # Base image
-FROM debian:13
+FROM debian:12
 
 # Install PHP + PHP-FPM + extensions needed for WordPress
 RUN apt update -y && apt install -y \
     php \
     php-fpm \
     php-mysql \
-    # php-json \
-    # php-curl \
-    # php-gd \
-    # php-xml \
-    # php-mbstring \
-    # php-zip \
     wget \
     tar \
     # Create a generic symlink for whatever php-fpm8x version was installed
