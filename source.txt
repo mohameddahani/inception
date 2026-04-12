@@ -1,2 +1,22 @@
 install wordpress + php-fpm => https://forumweb.hosting/blog/deploying-a-wordpress-site-on-an-ubuntu-vps-with-nginx-php-fpm-and-mariadb/
 docker-compose
+
+
+
+
+
+
+
+check if mariadb can connect with any container in the network:
+root@9c17137747fe:/mariadb# ss -lntp | grep 3306
+LISTEN 0      80           0.0.0.0:3306       0.0.0.0:*          
+root@9c17137747fe:/mariadb# 
+
+
+
+check if php-fpm is work
+root@0e365285cca2:/var/www/html# ps aux | grep php-fpm
+root           1  0.0  0.2 236616 22476 ?        Ss   12:19   0:00 php-fpm: master process (/etc/php/8.4/fpm/php-fpm.conf)
+www-data      13  0.0  0.0 236616  6600 ?        S    12:19   0:00 php-fpm: pool www
+www-data      14  0.0  0.0 236616  6600 ?        S    12:19   0:00 php-fpm: pool www
+root@0e365285cca2:/var/www/html# 

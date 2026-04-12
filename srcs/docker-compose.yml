@@ -1,16 +1,12 @@
+name: inception
+
 services:
   mariadb:
     build: ./requirements/mariadb
     image: my-mariadb
     container_name: my-mariadb
     restart: always
-  nginx:
-    build: ./requirements/nginx
-    image: my-nginx
-    container_name: my-nginx
-    restart: always
-    ports:
-      - "8080:80"
+
   wordpress:
     depends_on:
       - mariadb
@@ -18,3 +14,23 @@ services:
     image: my-wordpress
     container_name: my-wordpress
     restart: always
+    volumes:
+      - wp-data:/var/www/html
+
+  nginx:
+    build: ./requirements/nginx
+    image: my-nginx
+    container_name: my-nginx
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - wp-data:/var/www/html
+
+volumes:
+  wp-data:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /home/mohamed-dahani/Desktop/wordp

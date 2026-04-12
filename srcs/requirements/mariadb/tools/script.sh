@@ -33,4 +33,12 @@ echo "MariaDB initialization complete."
 service mariadb stop
 
 # Start MariaDB as main process (PID 1)
-exec mariadbd --user=mysql --datadir=/var/lib/mysql
+# exec → makes MariaDB the main container process (important for Docker signals)
+#
+# --user=mysql → runs MariaDB with limited safe permissions (not root)
+#
+# --datadir=/var/lib/mysql → where all database files are stored
+# (tables, system DB, logs, etc.)
+#
+# --bind-address=0.0.0.0 → allows connections from other containers (not only localhost)
+exec mariadbd --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0

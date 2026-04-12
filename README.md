@@ -187,3 +187,7 @@ Container networking refers to the ability for containers to connect to and comm
 VM and a container is that containers are faster and more lightweight — instead of running a full-blown OS like
 a VM, containers share the OS/kernel with the host they’re running on. It’s also common for containers to be
 based on minimalist images that only include software and dependencies required by the application.
+
+## difference between CMD and ENTRYPOINT
+- CMD can be OVERRIDED
+- ENTRYPOINT can not be OVERRIDED

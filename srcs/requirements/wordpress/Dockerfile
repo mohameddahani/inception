@@ -21,14 +21,15 @@ RUN apt update -y && apt install -y \
 # Set working directory
 WORKDIR /var/www/html
 
-# Download WordPress
-RUN wget https://wordpress.org/latest.tar.gz \
-    && tar -xvf latest.tar.gz \
-    && mv wordpress/* . \
-    && rm -rf wordpress latest.tar.gz
+# Copy files from host machine to image
+COPY ./conf /etc/conf
+COPY ./tools /etc/tools
+
+# Add execute permission to script
+RUN chmod +x /etc/tools/script.sh
 
 # Expose PHP-FPM port
 EXPOSE 9000
 
-# Run PHP-FPM in foreground
-CMD ["php-fpm", "-F"]
+# Run script
+CMD ["bash", "/etc/tools/script.sh"]
