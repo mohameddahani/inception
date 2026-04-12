@@ -3,24 +3,26 @@ name: inception
 services:
   mariadb:
     build: ./requirements/mariadb
-    image: my-mariadb:inception
-    container_name: my-mariadb
+    image: mariadb:inception
+    container_name: mariadb_container
     restart: always
+    volumes:
+      - mariadb-data:/var/lib/mysql
 
   wordpress:
     depends_on:
       - mariadb
     build: ./requirements/wordpress
-    image: my-wordpress:inception
-    container_name: my-wordpress
+    image: wordpress:inception
+    container_name: wordpress_container
     restart: always
     volumes:
       - wp-data:/var/www/html
 
   nginx:
     build: ./requirements/nginx
-    image: my-nginx:inception
-    container_name: my-nginx
+    image: nginx:inception
+    container_name: nginx_container
     restart: always
     ports:
       - "8080:80"
@@ -29,8 +31,14 @@ services:
 
 volumes:
   wp-data:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /home/mohamed-dahani/Desktop/wordp
+    driver: local # Store data on the local machine (not remote storage like NFS or cloud)
+    driver_opts: # driver options
+      type: none # Don’t use any special filesystem type (like ext4, nfs, etc.)
+      o: bind # Bind (attach) this volume to an existing directory on the host
+      device: /home/mdahani/data/wordpress-data # This is where data will physically be stored.
+  mariadb-data:
+    driver: local # Store data on the local machine (not remote storage like NFS or cloud)
+    driver_opts: # driver options
+      type: none # Don’t use any special filesystem type (like ext4, nfs, etc.)
+      o: bind # Bind (attach) this volume to an existing directory on the host
+      device: /home/mdahani/data/mariadb-data # This is where data will physically be stored.
