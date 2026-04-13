@@ -89,7 +89,11 @@ define( 'WP_DEBUG', false );
 
 /* Add any custom values between this line and the "stop editing" line. */
 
+// This is the public address of your website
+define('WP_HOME', 'https://localhost');
 
+// This is where WordPress core files live like (wp-admin / wp-includes / wp-login.php)
+define('WP_SITEURL', 'https://localhost');
 
 /* That's all, stop editing! Happy publishing. */
 

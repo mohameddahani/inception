@@ -3,14 +3,14 @@ FROM debian:12
 
 # Install nginx
 RUN apt update && \
-    apt install -y nginx
+    apt install -y nginx openssl
 
 # Copy files from host machine to image
 COPY ./conf /etc/conf
 COPY ./tools /etc/tools
 
 # Expose HTTP port
-EXPOSE 80
+EXPOSE 443
 
 # Run script
 CMD ["bash", "/etc/tools/script.sh"]
