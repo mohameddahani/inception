@@ -5,7 +5,6 @@ FROM debian:12
 WORKDIR /mariadb
 
 # Copy files from host machine to image
-COPY ./conf /etc/conf
 COPY ./tools /etc/tools
 
 # Install MariaDB

@@ -6,16 +6,40 @@ set -e
 # Download WordPress
 cd /var/www/html
 
-wget https://wordpress.org/latest.tar.gz \
-    && tar -xvf latest.tar.gz \
-    && mv wordpress/* . \
-    && rm -rf wordpress latest.tar.gz
+# Downloads WordPress files from wordpress.org
+# --path=/var/www/html => where to download WordPress to
+# --allow-root => by default WP-CLI refuses to run as root (security), in Docker we are always root, so this flag is required, without it → ERROR: "You are attempting to run as root"
+wp core download \
+    --path=/var/www/html \
+    --allow-root
 
-# Delete the default Config of wordpress
-rm -rf ./wp-config-sample.php
+# Connect to Database
+wp config create \
+  --dbname="$DB_NAME" \
+  --dbuser="$DB_USER" \
+  --dbpass="$DB_PASSWORD" \
+  --dbhost="$DB_HOST" \
+  --allow-root
 
-# Copy Config of wordpress
-cp /etc/conf/wp-config.php /var/www/html
+# runs WordPress installation (like the web installer)
+# --skip-email don't send welcome email after install important in Docker → no mail server configured
+wp core install \
+    --path=/var/www/html \
+    --url="${WP_URL}" \
+    --title="${WP_TITLE}" \
+    --admin_user="${WP_ADMIN_USER}" \
+    --admin_password="${WP_ADMIN_PASSWORD}" \
+    --admin_email="${WP_ADMIN_EMAIL}" \
+    --skip-email \
+    --allow-root
+
+# Create normal user
+wp user create "${WP_USER}" "${WP_USER_EMAIL}" \
+    --path=/var/www/html \
+    --role=author \
+    --user_pass="${WP_USER_PASSWORD}" \
+    --allow-root
+
 
 # Print Message
 echo "Wordpress is Downloaded Successfully !"

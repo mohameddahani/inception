@@ -6,17 +6,20 @@ RUN apt update -y && apt install -y \
     php \
     php-fpm \
     php-mysql \
-    wget \
-    tar \
-    # Create a generic symlink for whatever php-fpm8x version was installed
+    curl \
     && ln -s /usr/sbin/php-fpm8* /usr/sbin/php-fpm \
     && apt clean
+
+# Install Wordpress CLI
+# -O → save file with same name (wp-cli.phar)
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
 # Set working directory
 WORKDIR /var/www/html
 
 # Copy files from host machine to image
-COPY ./conf /etc/conf
 COPY ./tools /etc/tools
 
 # Add execute permission to script
