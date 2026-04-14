@@ -22,9 +22,9 @@ done
 # on all tables (*) inside the database (my_wordpress_db)
 # FLUSH PRIVILEGES => reloads the privilege tables so changes take effect immediately
 mariadb -u root << MYSQL_QUERIES
-CREATE DATABASE IF NOT EXISTS my_wordpress_db;
-CREATE USER IF NOT EXISTS 'my_wordpress_usr'@'%' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON my_wordpress_db.* TO 'my_wordpress_usr'@'%';
+CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_USER_PASSWORD}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 MYSQL_QUERIES
 

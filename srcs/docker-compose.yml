@@ -6,6 +6,8 @@ services:
     image: mariadb:inception
     container_name: mariadb_container
     restart: always
+    env_file:
+      - .env
     volumes:
       - mariadb-data:/var/lib/mysql
 
@@ -16,6 +18,8 @@ services:
     image: wordpress:inception
     container_name: wordpress_container
     restart: always
+    env_file:
+      - .env
     volumes:
       - wp-data:/var/www/html
 
@@ -24,6 +28,8 @@ services:
     image: nginx:inception
     container_name: nginx_container
     restart: always
+    env_file:
+      - .env
     ports:
       - "443:443"
     volumes:

@@ -27,6 +27,11 @@ echo "Wordpress is Downloaded Successfully !"
 sed -i 's|listen = /run/php/php.*-fpm.sock|listen = 0.0.0.0:9000|' \
 /etc/php/*/fpm/pool.d/www.conf
 
+# Dont clear env of php-fpm befor start the process
+# Remove Comment from ;clear_env = no
+sed -i 's|;clear_env = no|clear_env = no|' \
+/etc/php/*/fpm/pool.d/www.conf
+
 # Print Message
 echo "Starting PHP-FPM..."
 
