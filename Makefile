@@ -1,27 +1,27 @@
-DOCKER_COMPOSE_DIR = docker compose -f srcs/docker-compose.yml
+DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
 
 LOCAL_DIR = /home/mdahani/data/
 
 all:
 	@mkdir -p $(LOCAL_DIR)wordpress-data
 	@mkdir -p $(LOCAL_DIR)mariadb-data
-	$(DOCKER_COMPOSE_DIR) up
+	$(DOCKER_COMPOSE) up
 
 build:
-	$(DOCKER_COMPOSE_DIR) build --no-cache
+	$(DOCKER_COMPOSE) build --no-cache
 
 stop:
-	$(DOCKER_COMPOSE_DIR) stop
+	$(DOCKER_COMPOSE) stop
 
 clean: stop
-	$(DOCKER_COMPOSE_DIR) down -v
+	$(DOCKER_COMPOSE) down -v
 
 fclean: clean
 # 	Remove all unused images not just dangling ones 
 	docker system prune -af
 # 	Remove unused local volumes
 	docker volume prune
-	$(DOCKER_COMPOSE_DIR) down --rmi all
+	$(DOCKER_COMPOSE) down --rmi all
 	@sudo rm -rf $(LOCAL_DIR)
 
 rebuild: clean build all
