@@ -24,6 +24,8 @@ services:
       - wp-data:/var/www/html
 
   nginx:
+    depends_on:
+      - wordpress
     build: ./requirements/nginx
     image: nginx:inception
     container_name: nginx_container
@@ -34,6 +36,20 @@ services:
       - "443:443"
     volumes:
       - wp-data:/var/www/html
+
+  redis:
+    depends_on:
+      - nginx
+    build: ./requirements/bonus/redis
+    image: redis:inception
+    container_name: redis_container
+    restart: always
+    env_file:
+      - .env
+    # ports:
+    #   - "443:443"
+    # volumes:
+    #   - wp-data:/var/www/html
 
 volumes:
   wp-data:
