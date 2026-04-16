@@ -83,13 +83,23 @@ sed -i 's|;clear_env = no|clear_env = no|' \
 # wp config set => is mean set on config file => wp-config.php
 # --raw => mean set the value in wp-config.php as interger not string
 # wp redis enable => Enable Redis cache on this file => wp-content/object-cache.php
-# wp config set WP_REDIS_HOST ${WP_REDIS_HOST} --raw
-# wp config set WP_REDIS_PORT ${WP_REDIS_PORT} --raw
-# wp plugin install redis-cache --activate
-# wp redis enable
+wp config set WP_REDIS_HOST "${WP_REDIS_HOST}" --allow-root
+wp config set WP_REDIS_PORT "${WP_REDIS_PORT}" --raw --allow-root
 
-# # Print Message
-# wp redis status
+# Install plugin of Redis 
+if ! wp plugin is-installed redis-cache --path=/var/www/html --allow-root; then
+    echo "Installing Redis..."
+    wp plugin install redis-cache --activate --allow-root
+
+else
+    echo "redis already installed, skipping..."
+fi
+
+# Start Redis
+wp redis enable --allow-root
+
+# Print Message
+wp redis status --allow-root
 
 # Print Message
 echo "Starting PHP-FPM..."

@@ -22,3 +22,17 @@ root           1  0.0  0.2 236616 22476 ?        Ss   12:19   0:00 php-fpm: mast
 www-data      13  0.0  0.0 236616  6600 ?        S    12:19   0:00 php-fpm: pool www
 www-data      14  0.0  0.0 236616  6600 ?        S    12:19   0:00 php-fpm: pool www
 root@0e365285cca2:/var/www/html# 
+
+
+
+
+test redis from redis container
+root@b95de701291c:/redis# redis-cli
+127.0.0.1:6379> ping
+PONG
+127.0.0.1:6379> 
+
+
+test redis from wordpress container
+wp cache set my_key "hello redis"
+wp cache get my_key
