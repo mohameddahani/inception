@@ -104,5 +104,12 @@ wp redis status --allow-root
 # Print Message
 echo "Starting PHP-FPM..."
 
+# Give WordPress full ownership of its files so it can read/write everything
+# chown => change owner
+# -R = recursive => Apply this change to EVERYTHING inside the folder
+# www-data => It is the system user used by: WordPress / Apache / PHP-FPM
+# www-data:www-data => user_owner:group_owner
+chown -R www-data:www-data /var/www/html
+
 # Run PHP-FPM in foreground
 exec php-fpm -F
