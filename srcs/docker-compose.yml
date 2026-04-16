@@ -49,6 +49,20 @@ services:
     ports:
       - "6379:6379"
 
+  ftp:
+    depends_on:
+      - nginx
+    build: ./requirements/bonus/FTP
+    image: ftp:inception
+    container_name: ftp_container
+    restart: always
+    # env_file:
+    #   - .env
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - wp-data:/var/www/html
+
 volumes:
   wp-data:
     driver: local # Store data on the local machine (not remote storage like NFS or cloud)
