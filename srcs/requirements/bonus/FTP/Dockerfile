@@ -9,12 +9,19 @@ WORKDIR /FTP
 
 # Copy files from host machine to image
 COPY ./tools /etc/tools
+COPY ./conf /etc/conf
 
 # Add execute permission to script
 RUN chmod +x /etc/tools/script.sh
 
-# Expose PHP-FPM port
-EXPOSE 9000
+# Expose FTP port
+# Control/Command
+EXPOSE 21
+# Send data back to the client
+EXPOSE 20
+
+# Passive mode port range
+EXPOSE 21100-21110
 
 # Run script
 CMD ["bash", "/etc/tools/script.sh"]

@@ -56,10 +56,12 @@ services:
     image: ftp:inception
     container_name: ftp_container
     restart: always
-    # env_file:
-    #   - .env
-    # ports:
-    #   - "6379:6379"
+    env_file:
+      - .env
+    ports:
+      - "21:21" # control
+      - "20:20" # data active
+      - "21100-21110:21100-21110"  # data passive
     volumes:
       - wp-data:/var/www/html
 

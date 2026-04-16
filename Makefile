@@ -20,7 +20,7 @@ fclean: clean
 # 	Remove all unused images not just dangling ones 
 	docker system prune -af
 # 	Remove unused local volumes
-	docker volume prune
+	docker volume prune -f
 	$(DOCKER_COMPOSE) down --rmi all
 	@sudo rm -rf $(LOCAL_DIR)
 
