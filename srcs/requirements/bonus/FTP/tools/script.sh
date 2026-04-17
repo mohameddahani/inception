@@ -5,29 +5,38 @@ set -e
 
 echo "Starting VSFTPD initialization..."
 
-mkdir -p /etc/vsftpd /var/run/vsftpd/empty
+# Create the required runtime directory for vsftpd
+mkdir -p /var/run/vsftpd/empty
 
 # ============================================
 # Create FTP user
 # ============================================
 
-# useradd → creates a new system user
-# -m → create home directory (/home/ftpuser)
-# -s /bin/bash → set shell to bash
-useradd -m -s /bin/bash "${FTP_USER}"
+# Check the user if already exist
+if ! grep "${FTP_USER}" /etc/passwd; then
+    echo "Creating user FTP..."
+    # useradd → creates a new system user
+    # -m → create home directory (/home/ftpuser)
+    useradd -m "${FTP_USER}"
+
+    # ============================================
+    # Give user access to wordpress files
+    # ============================================
+
+    # add FTP user to the www-data group
+    # usermod => user modify
+    # -aG => a -> append / G -> set the groups of a user
+    usermod -aG www-data "${FTP_USER}"
+else
+    echo "User FTP already exists, skipping..."
+fi
 
 # chpasswd → change password from stdin
 # reads "username:password" format
 echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd
 
-# ============================================
-# Give user access to wordpress files
-# ============================================
-
-# chown → change owner of directory
-# -R → recursive (apply to all files inside)
-# user:group → new owner
-chown -R "${FTP_USER}:${FTP_USER}" /var/www/html
+# Change permissions
+chmod -R u+rwx,g+rwx,o+rx /var/www/html
 
 # ============================================
 # Copy our custom config
