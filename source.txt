@@ -36,3 +36,22 @@ PONG
 test redis from wordpress container
 wp cache set my_key "hello redis"
 wp cache get my_key
+
+
+test FTP server
+ftp> get index.html
+local: index.html remote: index.html
+229 Entering Extended Passive Mode (|||21108|)
+150 Opening BINARY mode data connection for index.html (10701 bytes).
+100% |*************************************************************************************************************************************************| 10701      188.98 MiB/s    00:00 ETA
+226 Transfer complete.
+10701 bytes received in 00:00 (37.51 MiB/s)
+ftp> put Makefile 
+local: Makefile remote: Makefile
+229 Entering Extended Passive Mode (|||21105|)
+150 Ok to send data.
+100% |*************************************************************************************************************************************************|   577       14.48 MiB/s    00:00 ETA
+226 Transfer complete.
+577 bytes sent in 00:00 (1.66 MiB/s)
+ftp> 
+

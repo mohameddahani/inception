@@ -61,9 +61,17 @@ services:
     ports:
       - "21:21" # control
       - "20:20" # data active
-      - "21100-21110:21100-21110"  # data passive
+      - "21100-21110:21100-21110" # data passive
     volumes:
       - wp-data:/var/www/html
+
+  static_website:
+    build: ./requirements/bonus/static-website
+    image: static_website:inception
+    container_name: static_website_container
+    restart: always
+    ports:
+      - "8080:80" # control
 
 volumes:
   wp-data:
