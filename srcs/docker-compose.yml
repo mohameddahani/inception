@@ -71,7 +71,17 @@ services:
     container_name: static_website_container
     restart: always
     ports:
-      - "8080:80" # control
+      - "8080:80"
+
+  adminer:
+    depends_on:
+      - mariadb
+    build: ./requirements/bonus/adminer
+    image: adminer:inception
+    container_name: adminer_container
+    restart: always
+    ports:
+      - "8081:8081"
 
 volumes:
   wp-data:
