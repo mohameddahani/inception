@@ -21,7 +21,7 @@ COPY ./tools /etc/tools
 RUN chmod +x /etc/tools/script.sh
 
 # Expose Adminer port
-EXPOSE 8081
+EXPOSE 8080
 
 # Run script
 CMD ["bash", "/etc/tools/script.sh"]

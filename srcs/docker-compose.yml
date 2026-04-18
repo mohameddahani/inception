@@ -81,7 +81,20 @@ services:
     container_name: adminer_container
     restart: always
     ports:
-      - "8081:8081"
+      - "8081:8080"
+
+  cadvisor:
+    build: ./requirements/bonus/cadvisor
+    image: cadvisor:inception
+    container_name: cadvisor_container
+    restart: always
+    ports:
+      - "8082:8080"
+    volumes:
+      - /:/rootfs:ro            # disk usage of host
+      - /var/run:/var/run:ro    # find and talk to Docker
+      - /sys:/sys:ro            # CPU, RAM, network from kernel
+      - /var/lib/docker/:/var/lib/docker:ro  # container names, metadata, image sizes
 
 volumes:
   wp-data:
