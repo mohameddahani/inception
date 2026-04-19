@@ -1,10 +1,10 @@
-# 🐳 Inception
+# Inception
 
 *This project has been created as part of the 42 curriculum by mdahani*
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 
 - [Description](#description)
 - [Architecture Overview](#architecture-overview)
@@ -18,7 +18,7 @@
 
 ---
 
-## 📖 Description
+## Description
 
 **Inception** is a system administration project from the 42 curriculum that focuses on containerizing a complete web infrastructure using **Docker** and **Docker Compose**.
 
@@ -31,15 +31,15 @@ The goal is to build and orchestrate three interdependent services — each runn
 | **MariaDB** | Relational database for WordPress |
 
 Key guarantees of the infrastructure:
-- 🔒 **Encrypted communication** via TLS certificates
-- 📦 **Service isolation** — one process per container
-- 💾 **Data persistence** through named Docker volumes
-- 🔁 **Auto-restart** on container crash
-- 🔐 **Secret management** using environment variables and `.env` files
+- **Encrypted communication** via TLS certificates
+- **Service isolation** — one process per container
+- **Data persistence** through named Docker volumes
+- **Auto-restart** on container crash
+- **Secret management** using environment variables and `.env` files
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
                         [ Browser ]
@@ -68,7 +68,7 @@ Key guarantees of the infrastructure:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 inception/
@@ -116,7 +116,7 @@ inception/
 
 ---
 
-## ⚙️ Instructions
+## Instructions
 
 ### Prerequisites
 
@@ -175,7 +175,7 @@ FTP_USER=ftp_mdahani
 FTP_PASSWORD=your_ftp_password
 ```
 
-> ⚠️ **Security Note:** Never commit `.env` or any secrets file to your Git repository. These are listed in `.gitignore`.
+> **Security Note:** Never commit `.env` or any secrets file to your Git repository. These are listed in `.gitignore`.
 
 ---
 
@@ -215,7 +215,7 @@ This will:
 
 ---
 
-## 🌐 Usage
+## Usage
 
 Once the project is running, open your browser and navigate to:
 
@@ -231,11 +231,11 @@ https://mdahani.42.fr/wp-admin
 
 Login with the `WP_ADMIN_USER` and `WP_ADMIN_PASSWORD` from your `.env` file.
 
-> 🔐 The browser may warn about a self-signed certificate — this is expected. Accept the exception to continue.
+> The browser may warn about a self-signed certificate — this is expected. Accept the exception to continue.
 
 ---
 
-## 💡 Key Concepts
+## Key Concepts
 
 ### What is Docker?
 
@@ -267,7 +267,7 @@ Docker Networks allow containers to communicate with each other in an isolated e
 
 ---
 
-## 🔍 Design Choices
+## Design Choices
 
 ### Virtual Machines vs Docker
 
@@ -303,7 +303,7 @@ Docker Networks allow containers to communicate with each other in an isolated e
 | **Isolation** | Full isolation between containers | Shares host network stack |
 | **Security** | More secure | Less secure |
 | **DNS** | Container name resolution | Not available |
-| **Allowed?** | ✅ Yes | ❌ Forbidden by subject |
+| **Allowed?** | Yes | Forbidden by subject |
 
 **Conclusion:** A custom Docker bridge network is used so containers communicate securely by service name, without exposing anything to the host network directly.
 
@@ -316,13 +316,13 @@ Docker Networks allow containers to communicate with each other in an isolated e
 | **Managed by** | Docker daemon | Host filesystem |
 | **Portability** | High | Low (path-dependent) |
 | **Persistence** | Yes | Yes |
-| **Allowed?** | ✅ Required | ❌ Forbidden for required volumes |
+| **Allowed?** | Required | Forbidden for required volumes |
 
 **Conclusion:** Named Docker volumes are used for both the MariaDB database and the WordPress files to ensure portability and proper Docker-managed persistence.
 
 ---
 
-## 🛠️ Docker Command Reference
+## Docker Command Reference
 
 ```bash
 # Container management
@@ -359,7 +359,7 @@ docker system prune -af         # Remove all unused Docker data
 
 ---
 
-## 📚 Resources
+## Resources
 
 ### Official Documentation
 - [Docker Documentation](https://docs.docker.com/)
@@ -394,7 +394,7 @@ No AI-generated code was used, and no project tasks were solved using AI.
 
 ---
 
-## 📝 Notes
+## Notes
 
 - `CMD` can be **overridden** at runtime (`docker run <image> <new_cmd>`)
 - `ENTRYPOINT` **cannot be overridden** without the `--entrypoint` flag — it defines the container's main process
@@ -403,4 +403,4 @@ No AI-generated code was used, and no project tasks were solved using AI.
 
 ---
 
-*Built with 🐳 Docker | 42 School — System Administration Project*
+*Built with Docker | 42 School — System Administration Project*
