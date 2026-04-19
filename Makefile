@@ -17,7 +17,7 @@ clean: stop
 	$(DOCKER_COMPOSE) down -v
 
 fclean: clean
-# 	Remove all unused images not just dangling ones 
+# 	Remove all unused images
 	docker system prune -af
 # 	Remove unused local volumes
 	docker volume prune -f

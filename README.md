@@ -1,193 +1,406 @@
-# inception
+# 🐳 Inception
+
+*This project has been created as part of the 42 curriculum by mdahani*
+
+---
+
+## 📌 Table of Contents
+
+- [Description](#description)
+- [Architecture Overview](#architecture-overview)
+- [Project Structure](#project-structure)
+- [Instructions](#instructions)
+- [Usage](#usage)
+- [Key Concepts](#key-concepts)
+- [Design Choices](#design-choices)
+- [Docker Command Reference](#docker-command-reference)
+- [Resources](#resources)
+
+---
+
+## 📖 Description
+
+**Inception** is a system administration project from the 42 curriculum that focuses on containerizing a complete web infrastructure using **Docker** and **Docker Compose**.
+
+The goal is to build and orchestrate three interdependent services — each running in its own dedicated container — forming a secure, production-inspired environment:
+
+| Service | Role |
+|---------|------|
+| **NGINX** | Reverse proxy & sole HTTPS entry point (TLSv1.2/1.3) |
+| **WordPress + PHP-FPM** | Application layer (no web server inside) |
+| **MariaDB** | Relational database for WordPress |
+
+Key guarantees of the infrastructure:
+- 🔒 **Encrypted communication** via TLS certificates
+- 📦 **Service isolation** — one process per container
+- 💾 **Data persistence** through named Docker volumes
+- 🔁 **Auto-restart** on container crash
+- 🔐 **Secret management** using environment variables and `.env` files
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+                        [ Browser ]
+                            |
+                         port 443 (HTTPS / TLS)
+                            |
+                     ┌──────────────┐
+                     │    NGINX     │  ← Only entry point
+                     └──────┬───────┘
+                            │ FastCGI (port 9000)
+                     ┌──────▼───────┐
+                     │  WordPress   │
+                     │  (PHP-FPM)   │
+                     └──────┬───────┘
+                            │ MySQL protocol (port 3306)
+                     ┌──────▼───────┐
+                     │   MariaDB    │
+                     └──────────────┘
+
+        All containers communicate via: docker-network (bridge)
+
+        Volumes:
+        ├── db_volume    → /home/mdahani/data/mariadb-data
+        └── wp_volume    → /home/mdahani/data/wordpress-data
+```
+
+---
+
+## 📂 Project Structure
+
+```
+inception/
+├── Makefile
+├── README.md
+└── srcs/
+    ├── docker-compose.yml
+    └── requirements/
+        ├── bonus/
+        │   ├── adminer/
+        │   │   ├── Dockerfile
+        │   │   └── tools/
+        │   │       └── script.sh
+        │   ├── cadvisor/
+        │   │   └── Dockerfile
+        │   ├── FTP/
+        │   │   ├── Dockerfile
+        │   │   ├── conf/
+        │   │   │   └── vsftpd.conf
+        │   │   └── tools/
+        │   │       └── script.sh
+        │   ├── redis/
+        │   │   ├── Dockerfile
+        │   │   └── tools/
+        │   │       └── script.sh
+        │   └── static-website/
+        │       ├── Dockerfile
+        │       └── tools/
+        │           └── script.sh
+        ├── mariadb/
+        │   ├── Dockerfile
+        │   └── tools/
+        │       └── script.sh
+        ├── nginx/
+        │   ├── Dockerfile
+        │   ├── conf/
+        │   │   └── wordpress.conf
+        │   └── tools/
+        │       └── script.sh
+        └── wordpress/
+            ├── Dockerfile
+            └── tools/
+                └── script.sh
+```
 
-#### What is Docker ?
+---
 
-Docker is an open platform for developing, shipping, and running applications. Docker enables you to separate your applications from your infrastructure so you can deliver software quickly. With Docker, you can manage your infrastructure in the same ways you manage your applications. By taking advantage of Docker's methodologies for shipping, testing, and deploying code, you can significantly reduce the delay between writing code and running it in production.
+## ⚙️ Instructions
 
-#### What is Docker Engine ?
+### Prerequisites
 
-The Docker engine is the core sofware that runs and manages containers. Docker Engine acts as a client-server application with:
+- A Virtual Machine (required by the subject)
+- [Docker](https://docs.docker.com/get-docker/) installed
+- [Docker Compose](https://docs.docker.com/compose/install/) installed
+- `make` utility
 
-- A server with a long-running daemon process dockerd.
-- APIs which specify interfaces that programs can use to talk to and instruct the Docker daemon.
-- A command line interface (CLI) client docker.
+---
 
-#### What is Docker daemon (dockerd) ?
+### 1. Clone the repository
 
-The Docker daemon (dockerd) is the main background process that runs on the host machine and controls everything in Docker.
+```bash
+git clone https://github.com/mohameddahani/inception.git
+cd inception
+```
 
-It is the central brain of Docker.
-Whenever you run a Docker command, the daemon receives the request and executes it.
+---
 
-#### What is containerd ?
+### 2. Configure environment variables
 
-(pronounced container-dee). Its sole purpose in life was to manage container lifecycle operations — start | stop | pause | rm....
+Create a `.env` file inside the `srcs/` directory:
 
-#### What is runc ?
+```bash
+touch srcs/.env
+```
 
-runc has a single purpose in life — create containers. And it’s damn good at it.
+Populate it with the following variables:
 
-#### What is Image ?
+```env
+# Domain
+DOMAIN_NAME=mdahani.42.fr
 
-A Docker Image is a lightweight, standalone, and executable software package that includes everything needed to run an application: the code, a runtime, system tools, libraries, and settings.
+# MariaDB
+DB_HOST=mariadb
+DB_NAME=my_wordpress_db
+DB_USER=my_wordpress_usr
+DB_PASSWORD=your_db_password
 
-The docker image includes the following to run a piece of software. Docker images are specific to both the operating system (OS) and the CPU architecture for which they were built.
+# WordPress
+WP_URL=https://mdahani.42.fr
+WP_TITLE=My Website
+WP_ADMIN_USER=mdahani
+WP_ADMIN_PASSWORD=your_admin_password
+WP_ADMIN_EMAIL=mdahani@student.1337.ma
+WP_USER=bounati
+WP_USER_PASSWORD=your_user_password
+WP_USER_EMAIL=bounati@student.1337.ma
 
-#### What is Container ?
+# Redis (bonus)
+WP_REDIS_HOST=redis
+WP_REDIS_PORT=6379
 
-Containers are lightweight piece of software that contains all the code, libraries, and dependencies that the application needs to run. Containers do not have their own operating system, they get resources from the host operating system. Because they do not have an operating system of their own they are lightweight. They are also easily portable as they contain all the libraries and the dependencies to run the application.
+# FTP (bonus)
+FTP_USER=ftp_mdahani
+FTP_PASSWORD=your_ftp_password
+```
 
-#### What is Volume ?
+> ⚠️ **Security Note:** Never commit `.env` or any secrets file to your Git repository. These are listed in `.gitignore`.
 
-Docker Volumes are a way to store data outside of a container’s filesystem so that the data isn’t lost when the container stops or is deleted. By default, anything you create inside a container is temporary, but with volumes, you can keep files (like databases, logs, or configs) in a safe and reusable location managed by Docker.
+---
 
-#### What is Dockerfile ?
+### 3. Configure your local domain
 
-A Dockerfile is the starting point for creating a container image — it describes an application and tells Docker how to build it into an image.
+Add the following line to your `/etc/hosts` file on the host machine:
 
-#### What is Docker Compose ?
+```
+127.0.0.1   mdahani.42.fr
+```
 
-Docker Compose is a tool provided by Docker that allows you to define, configure, and run multiple containers as a single application using a YAML file (docker-compose.yml).
+---
 
-It lets you manage services, networks, and volumes in one place, and start or stop the entire application with a single command.
+### 4. Build and run the project
 
-Example: You can use Docker Compose to run a frontend, backend, and database together as one system.
+```bash
+make
+```
 
-#### What is Docker Network ?
+This will:
+1. Build all Docker images from their respective `Dockerfile`s
+2. Create Docker volumes and network
+3. Start all containers via `docker-compose`
 
-Container networking refers to the ability for containers to connect to and communicate with each other, and with non-Docker network services.
+---
 
+### Makefile Targets
 
+| Command | Description |
+|---------|-------------|
+| `make` | Build images and start all containers |
+| `make stop` | Stop all running containers |
+| `make clean` | Stop and remove containers + volumes |
+| `make build` | Rebuild all images without cache |
+| `make fclean` | Full clean: containers, volumes, and build cache |
+| `make rebuild` | Full clean + rebuild from scratch |
 
-## Commands:
+---
 
-`docker run hello-world`
+## 🌐 Usage
 
-- Create a container from image hello-world and run it
+Once the project is running, open your browser and navigate to:
 
-`docker container ls`
+```
+https://mdahani.42.fr
+```
 
-- Shows only running containers
+You should see the WordPress website. To access the admin dashboard:
 
-`docker container ls -l`
+```
+https://mdahani.42.fr/wp-admin
+```
 
-- -l = last created container
+Login with the `WP_ADMIN_USER` and `WP_ADMIN_PASSWORD` from your `.env` file.
 
-`docker container ls -a or -la`
+> 🔐 The browser may warn about a self-signed certificate — this is expected. Accept the exception to continue.
 
-- -a = all containers (running or stopped)
+---
 
-`docker run --name dahani hello-world`
+## 💡 Key Concepts
 
-- --name = Rename the container
+### What is Docker?
 
-`docker rm dahani`
+Docker is an open platform for developing, shipping, and running applications inside isolated environments called **containers**. It allows you to separate your application from the infrastructure, enabling faster delivery cycles.
 
-- rm = Remove a container
+### What is a Container?
 
-`docker rmi image-dahani`
+A container is a lightweight, standalone executable package that includes everything needed to run a piece of software: code, runtime, libraries, and system tools — but **without its own OS**. It shares the host's kernel, making it far more efficient than a Virtual Machine.
 
-- rmi = Remove a image
+### What is a Docker Image?
 
-`docker rmi $(docker images -q) -f`
+A Docker Image is a read-only template used to create containers. It is built from a `Dockerfile` and contains the application code and all its dependencies.
 
-- remove all images
-- $(docker images -q) = show id of all images
-- -f = force
+### What is a Dockerfile?
 
-`docker rm $(docker ps -aq) -f`
+A `Dockerfile` is a text file with a set of instructions that Docker uses to build an image automatically. Each instruction creates a new layer in the image.
 
-- remove all containers
-- $(docker ps -aq) = show id of all containers
-- -f = force
+### What is Docker Compose?
 
-`docker ps`
+Docker Compose is a tool for defining and running **multi-container** Docker applications. You describe your services, networks, and volumes in a single `docker-compose.yml` file and manage them with one command.
 
-- is like docker container ls with all flags (the diff between them is docker ps is older than docker container ls)
+### What is a Docker Volume?
 
-`docker image ls`
+A Docker Volume is a persistent storage mechanism managed by Docker. Data stored in a volume **survives** container restarts and deletions — essential for databases and application files.
 
-- show all images
+### What is Docker Network?
 
-`docker images`
+Docker Networks allow containers to communicate with each other in an isolated environment. A custom bridge network is used in this project so services can reach each other by name (e.g., `mariadb`, `wordpress`).
 
-- is like docker image ls with all flags (the diff between them is docker images is older than docker image ls)
+---
 
-`docker pull ubuntu`
+## 🔍 Design Choices
 
-- clone the image ubuntu from docker hub
+### Virtual Machines vs Docker
 
-`docker start my-ubuntu`
+| | Virtual Machines | Docker |
+|---|---|---|
+| **OS** | Full OS per VM | Shares host kernel |
+| **Weight** | Heavy (GBs) | Lightweight (MBs) |
+| **Startup** | Minutes | Seconds |
+| **Isolation** | Strong (hardware-level) | Process-level |
+| **Use case** | Full OS emulation | Microservices / apps |
 
-- start a container all ready build
+**Conclusion:** Docker is more suited for this project's microservice-style architecture where each service is isolated but lightweight.
 
-`docker stop my-ubuntu`
+---
 
-- stop a container all ready run
+### Secrets vs Environment Variables
 
-`docker restart my-ubuntu`
+| | Environment Variables | Docker Secrets |
+|---|---|---|
+| **Storage** | Plain text in `.env` | Encrypted at rest |
+| **Visibility** | Accessible in shell | Only exposed to specific services |
+| **Use case** | Config / non-sensitive data | Passwords, API keys |
+| **Ease of use** | Simple | Slightly more complex setup |
 
-- restart a container all ready run
+**In this project:** `.env` is used for general configuration. Sensitive values like passwords are stored in the `secrets/` directory and excluded from version control.
 
-`docker run -p 8080:80 nginx`
+---
 
-- -p = publish ports (Take a port from the container and expose it on my host machine) this concept called Port Mapping
+### Docker Network vs Host Network
 
-`docker run -d nginx`
+| | Docker Network (bridge) | Host Network |
+|---|---|---|
+| **Isolation** | Full isolation between containers | Shares host network stack |
+| **Security** | More secure | Less secure |
+| **DNS** | Container name resolution | Not available |
+| **Allowed?** | ✅ Yes | ❌ Forbidden by subject |
 
-- -d = detached mode (run the container in the background, The container keeps running, but your terminal does not get attached to it)
+**Conclusion:** A custom Docker bridge network is used so containers communicate securely by service name, without exposing anything to the host network directly.
 
-`docker image build -t test_image:latest .`
+---
 
-- this command build an image from Dockerfile it use buildx that also use buildKit
-- -t = is use to name the image that you build
-- . is mean the path of Dockerfile
+### Docker Volumes vs Bind Mounts
 
-`docker build -t test_image:latest .`
+| | Docker Volumes | Bind Mounts |
+|---|---|---|
+| **Managed by** | Docker daemon | Host filesystem |
+| **Portability** | High | Low (path-dependent) |
+| **Persistence** | Yes | Yes |
+| **Allowed?** | ✅ Required | ❌ Forbidden for required volumes |
 
-- this command build is like docker image build -t test_image:latest .
+**Conclusion:** Named Docker volumes are used for both the MariaDB database and the WordPress files to ensure portability and proper Docker-managed persistence.
 
-`docker search ubuntu`
+---
 
-- this command lets you search Docker Hub from the CLI
+## 🛠️ Docker Command Reference
 
-`docker run --name my_ubuntu -it my_ubuntu:latest bash`
+```bash
+# Container management
+docker container ls -a          # List all containers (running + stopped)
+docker run --name <name> <img>  # Create and run a named container
+docker start / stop / restart   # Manage container lifecycle
+docker rm <name>                # Remove a container
+docker rm $(docker ps -aq) -f   # Remove all containers
 
-- this command lets you to open terminal inside container
-- i = interactive → keeps input (keyboard) open so you can type commands
-- t = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
-- bash = TTY (terminal) → gives you a real terminal interface (prompt, formatting, etc.)
+# Image management
+docker image ls                 # List all images
+docker rmi <image>              # Remove an image
+docker rmi $(docker images -q) -f  # Remove all images
+docker build -t <name>:<tag> .  # Build image from Dockerfile
 
-`docker network ls`
+# Networking
+docker network ls               # List networks
+docker network create <name>    # Create a custom network
+docker network inspect <name>   # Inspect a network
 
-- this command is show list of networks
+# Volumes
+docker volume ls                # List volumes
+docker volume prune -f          # Remove unused volumes
 
-`docker network inspect bridge`
+# Compose
+docker compose up               # Start services
+docker compose down             # Stop and remove containers
+docker compose down -v          # Also remove volumes
+docker compose build --no-cache # Rebuild without cache
 
-- this command is show all informations about network like in this command is bridge
+# System
+docker system prune -af         # Remove all unused Docker data
+```
 
-`docker container inspect my_ubuntu`
+---
 
-- this command is show all informations about container
+## 📚 Resources
 
-`docker network create my-network`
+### Official Documentation
+- [Docker Documentation](https://docs.docker.com/)
+- [Docker Compose Reference](https://docs.docker.com/compose/)
+- [NGINX Documentation](https://nginx.org/en/docs/)
+- [MariaDB Documentation](https://mariadb.com/kb/en/)
+- [WordPress Developer Resources](https://developer.wordpress.org/)
 
-- this command create a network
+### Books
+- `Docker Deep Dive: Zero to Docker in a single book` by Nigel Poulton
+Comprehensive guide covering Docker fundamentals, networking, volumes, and orchestration
 
-`docker run --rm -d -p 8080:80 --network=my-network my_nginx:latest`
+### Guides & Tutorials
+- [WordPress + PHP-FPM + NGINX + MariaDB on Ubuntu VPS](https://forumweb.hosting/blog/deploying-a-wordpress-site-on-an-ubuntu-vps-with-nginx-php-fpm-and-mariadb/)
+- [Enable SSL in NGINX (HTTPS on port 443)](https://medium.com/@charanv369/enable-ssl-in-nginx-server-to-access-the-application-on-https-port-443-1bcd52667b08)
+- [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
-- this command add a container to a specific network
-- --rm this will remove the container after she stop
-- --network=my-network this flag make you chose the network
+### AI Usage
+AI tools (Claude & ChatGPT) were used in this project strictly for deep conceptual understanding of Docker internals and architecture, including:
 
+- Understanding Docker architecture (Docker Client, Docker Daemon, containerd, shim, runc)
+- Exploring how components communicate (HTTP/REST API, Unix socket, gRPC)
+- Learning container lifecycle internals (creation, execution, isolation)
 
-## difference between a VM and a container
+Advanced topics explored with AI:
 
-- the big difference between a
-VM and a container is that containers are faster and more lightweight — instead of running a full-blown OS like
-a VM, containers share the OS/kernel with the host they’re running on. It’s also common for containers to be
-based on minimalist images that only include software and dependencies required by the application.
+- Docker API interaction via Unix socket (/var/run/docker.sock)
+- Image layers, OverlayFS, and caching mechanisms
 
-## difference between CMD and ENTRYPOINT
-- CMD can be OVERRIDED
-- ENTRYPOINT can not be OVERRIDED
+All AI-generated explanations were carefully reviewed and validated.
+No AI-generated code was used, and no project tasks were solved using AI.
+
+---
+
+## 📝 Notes
+
+- `CMD` can be **overridden** at runtime (`docker run <image> <new_cmd>`)
+- `ENTRYPOINT` **cannot be overridden** without the `--entrypoint` flag — it defines the container's main process
+- Avoid `tail -f`, `sleep infinity`, or `while true` as entrypoints — use proper daemon processes instead
+- Always follow PID 1 best practices to ensure correct signal handling inside containers
+
+---
+
+*Built with 🐳 Docker | 42 School — System Administration Project*
