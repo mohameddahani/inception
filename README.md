@@ -403,6 +403,8 @@ No AI-generated code was used, and no project tasks were solved using AI.
 - Avoid `tail -f`, `sleep infinity`, or `while true` as entrypoints — use proper daemon processes instead
 - Always follow PID 1 best practices to ensure correct signal handling inside containers
 
+*If you want to go deeper into how Docker works under the hood? Check out [DOCKER_DEEP_DIVE.md](./DOCKER_DEEP_DIVE.md)*
+
 ---
 
 *Built with Docker | 42 School — System Administration Project*
