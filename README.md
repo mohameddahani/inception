@@ -375,6 +375,7 @@ docker system prune -af         # Remove all unused Docker data
 Comprehensive guide covering Docker fundamentals, networking, volumes, and orchestration
 
 ### Guides & Tutorials
+- [Course for Docker basics](https://www.youtube.com/watch?v=DFyPl2cZM2g&list=PLX1bW_GeBRhDkTf_jbdvBbkHs2LCWVeXZ)
 - [WordPress + PHP-FPM + NGINX + MariaDB on Ubuntu VPS](https://forumweb.hosting/blog/deploying-a-wordpress-site-on-an-ubuntu-vps-with-nginx-php-fpm-and-mariadb/)
 - [Enable SSL in NGINX (HTTPS on port 443)](https://medium.com/@charanv369/enable-ssl-in-nginx-server-to-access-the-application-on-https-port-443-1bcd52667b08)
 - [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)

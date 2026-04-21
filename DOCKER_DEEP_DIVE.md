@@ -1,10 +1,10 @@
-# 🐳 Docker Deep Dive
+# Docker Deep Dive
 
 > A comprehensive guide to understanding Docker internals — from architecture to image layers, networking, and Compose.
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 
 - [Docker Architecture](#docker-architecture)
   - [The Big Picture](#the-big-picture)
@@ -33,7 +33,7 @@
 
 ---
 
-## 🏗️ Docker Architecture
+## Docker Architecture
 
 ### The Big Picture
 
@@ -112,7 +112,7 @@ It can also be exposed over **TCP** for remote access (requires TLS in productio
 
 ### Docker Daemon (dockerd)
 
-The **Docker daemon** (`dockerd`) is the brain of Docker. It is a long-running background service that:
+The **Docker daemon** (`dockerd`) is the brain of Docker. It is the main service that manages Docker objects and communicates with containerd to create and manage containers. It is a long-running background service that:
 
 - Receives commands from the Docker client via the REST API
 - Manages Docker objects: images, containers, volumes, networks
@@ -132,15 +132,15 @@ dockerd tells containerd: "start a container from nginx image"
 
 ### containerd
 
-**containerd** (pronounced *container-dee*) is a high-level container runtime. It was extracted from Docker and donated to the CNCF (Cloud Native Computing Foundation), and is now used by Kubernetes too.
+**containerd** (pronounced *container-dee*) is a high-level container runtime. It was extracted from Docker and donated to the CNCF (Cloud Native Computing Foundation), and is now used by Kubernetes as well. Its primary purpose is to manage container lifecycle operations such as start, stop, pause, and delete.
 
-Its responsibilities:
+### Responsibilities
 
 - Pull images from registries
 - Manage image storage
 - Manage container lifecycle: **start | stop | pause | resume | delete**
-- Manage container snapshots (via OverlayFS)
-- Hand off container creation to **runc**
+- Manage container snapshots (e.g., via OverlayFS)
+- Delegate container creation and execution to **runc**
 
 ```
 containerd = "the manager"
@@ -157,7 +157,7 @@ The **shim** is a small, lightweight process that sits between `containerd` and 
 
 Its purpose is critical:
 
-> 💡 **If `dockerd` or `containerd` crashes — your running containers keep running.**
+> **If `dockerd` or `containerd` crashes — your running containers keep running.**
 
 How? Because the shim:
 
@@ -181,31 +181,31 @@ ps aux | grep containerd-shim
 It is the low-level OCI (Open Container Initiative) runtime that talks directly to the Linux kernel. Here is exactly what runc does when it creates a container:
 
 ```
-1️⃣  Sets up Linux namespaces
+    Sets up Linux namespaces
      → PID namespace     (isolated process tree)
      → Network namespace (isolated network stack)
      → Mount namespace   (isolated filesystem)
      → UTS namespace     (isolated hostname)
      → IPC namespace     (isolated inter-process communication)
 
-2️⃣  Applies cgroups
+    Applies cgroups
      → CPU limits
      → Memory limits
      → I/O limits
 
-3️⃣  Sets up the root filesystem
+    Sets up the root filesystem
      → Mounts the image layers using OverlayFS
 
-4️⃣  Executes the container process (PID 1)
+    Executes the container process (PID 1)
      → Hands off to the shim
      → runc exits — its job is done
 ```
 
-> ⚡ runc is ephemeral. It starts, creates the container, then **exits**. It does not stay running.
+> runc is ephemeral. It starts, creates the container, then **exits**. It does not stay running.
 
 ---
 
-## 🖼️ Docker Images
+## Docker Images
 
 ### What Is an Image?
 
@@ -243,7 +243,7 @@ Key properties of layers:
 | **Cached** | Docker skips rebuilding unchanged layers |
 | **Identified by SHA256** | Each layer has a unique hash |
 
-> 💡 Only the **topmost layer** of a running container is writable — this is called the **Container Layer** or **Copy-on-Write layer**. It is destroyed when the container is removed.
+> Only the **topmost layer** of a running container is writable — this is called the **Container Layer** or **Copy-on-Write layer**. It is destroyed when the container is removed.
 
 ---
 
@@ -285,7 +285,7 @@ Docker runs this command in a temporary container on top of Layer 1, then **snap
 [ Layer 1: Ubuntu 20.04        ]
 ```
 
-> ⚠️ Layer 2 does NOT copy all of Ubuntu. It only stores what changed.
+> Layer 2 does NOT copy all of Ubuntu. It only stores what changed.
 
 #### Layer 3 — Add Your Code
 
@@ -378,7 +378,7 @@ docker image prune
 docker image prune -a
 ```
 
-> 💡 Run `docker image prune -a` regularly to free up disk space on development machines.
+> Run `docker image prune -a` regularly to free up disk space on development machines.
 
 ---
 
@@ -415,9 +415,9 @@ docker pull alpine
 | | Tag | Digest |
 |---|---|---|
 | **Analogy** | Nickname | National ID number |
-| **Mutable?** | ✅ Yes — can be reassigned | ❌ No — content-derived |
+| **Mutable?** | Yes — can be reassigned | No — content-derived |
 | **Example** | `alpine:latest` | `alpine@sha256:9cacb71...` |
-| **Safe for prod?** | ⚠️ Risky | ✅ Guaranteed |
+| **Safe for prod?** | Risky | Guaranteed |
 
 #### Pulling by digest (production-safe)
 
@@ -429,30 +429,30 @@ This guarantees you get **exactly** that image, regardless of what `latest` poin
 
 ---
 
-## 📄 Dockerfile Deep Dive
+## Dockerfile Deep Dive
 
 ### Dockerfile Instructions Explained
 
 ```dockerfile
-# 1️⃣ Base image
+# Base image
 FROM node:20-alpine
 
-# 2️⃣ Set working directory
+# Set working directory
 WORKDIR /app
 
-# 3️⃣ Copy dependency files first (cache optimization)
+# Copy dependency files first (cache optimization)
 COPY package*.json ./
 
-# 4️⃣ Install dependencies
+# Install dependencies
 RUN npm install
 
-# 5️⃣ Copy application source
+# Copy application source
 COPY . .
 
-# 6️⃣ Expose documentation (does NOT publish the port)
+# Expose documentation (does NOT publish the port)
 EXPOSE 3000
 
-# 7️⃣ Default startup command
+# Default startup command
 CMD ["node", "app.js"]
 ```
 
@@ -471,7 +471,7 @@ CMD ["node", "app.js"]
 | `ARG` | Build-time variable (not available at runtime) | No |
 | `LABEL` | Adds metadata to the image | Yes |
 
-> ⚡ **Layer caching tip:** Put instructions that change rarely (`RUN apt install`) **before** instructions that change often (`COPY . .`). Docker caches layers in order — if an early layer is unchanged, it reuses the cache for all subsequent layers.
+> **Layer caching tip:** Put instructions that change rarely (`RUN apt install`) **before** instructions that change often (`COPY . .`). Docker caches layers in order — if an early layer is unchanged, it reuses the cache for all subsequent layers.
 
 ---
 
@@ -527,15 +527,15 @@ docker run myapp --port 8080        # → node app.js --port 8080
 | | CMD | ENTRYPOINT |
 |---|---|---|
 | **Role** | Default arguments | Fixed executable |
-| **Overridable?** | ✅ Yes | ⚠️ Only with `--entrypoint` |
+| **Overridable?** | Yes | Only with `--entrypoint` |
 | **Runtime args** | Replace CMD | Append to ENTRYPOINT |
 | **Use case** | Flexible containers | Fixed-purpose containers |
 
-> ✅ **Best practice:** Use `ENTRYPOINT` for the main process and `CMD` for default arguments. Always use the **exec form** `["executable", "arg"]` — not the shell form `"executable arg"` — for correct signal handling (PID 1).
+> **Best practice:** Use `ENTRYPOINT` for the main process and `CMD` for default arguments. Always use the **exec form** `["executable", "arg"]` — not the shell form `"executable arg"` — for correct signal handling (PID 1).
 
 ---
 
-## 🖥️ Docker vs Virtual Machines
+## Docker vs Virtual Machines
 
 | | Docker Container | Virtual Machine |
 |---|---|---|
@@ -578,15 +578,15 @@ Physical Hardware
 
 | Scenario | Docker | VM |
 |----------|--------|----|
-| Microservices | ✅ Ideal | ❌ Overkill |
-| CI/CD pipelines | ✅ Ideal | ⚠️ Slow |
-| Full OS isolation needed | ❌ Not suitable | ✅ Ideal |
-| Legacy app requiring specific OS | ❌ Risky | ✅ Ideal |
-| Development environment | ✅ Great | ⚠️ Heavy |
+| Microservices | Ideal | Overkill |
+| CI/CD pipelines | Ideal | Slow |
+| Full OS isolation needed | Not suitable | Ideal |
+| Legacy app requiring specific OS | Risky | Ideal |
+| Development environment | Great | Heavy |
 
 ---
 
-## 🐙 Docker Compose
+## Docker Compose
 
 ### What Is Docker Compose?
 
@@ -600,9 +600,9 @@ docker compose ps      # See status of all services
 ```
 
 Compose is useful in **every environment**:
-- 🧑‍💻 Development
-- 🧪 Testing / CI
-- 🚀 Staging / Production
+- Development
+- Testing / CI
+- Staging / Production
 
 It manages the full lifecycle of your application:
 - Build images
@@ -633,7 +633,7 @@ features:
   - tls
 ```
 
-> 💡 YAML is a superset of JSON — valid JSON is also valid YAML.
+> YAML is a superset of JSON — valid JSON is also valid YAML.
 
 ---
 
@@ -773,7 +773,7 @@ volumes:
 
 ---
 
-## 🛠️ Useful Commands Cheatsheet
+## Useful Commands Cheatsheet
 
 ### Images
 
@@ -850,4 +850,4 @@ curl --unix-socket /var/run/docker.sock http://localhost/containers/json
 
 ---
 
-*🐳 Built with deep curiosity — Docker is not magic, it's just Linux.*
+*Built with deep curiosity — Docker is not magic, it's just Linux.*
