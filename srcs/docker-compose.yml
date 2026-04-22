@@ -8,6 +8,8 @@ services:
     restart: always
     env_file:
       - .env
+    networks:
+      - bridge_network
     volumes:
       - mariadb-data:/var/lib/mysql
 
@@ -20,6 +22,8 @@ services:
     restart: always
     env_file:
       - .env
+    networks:
+      - bridge_network
     volumes:
       - wp-data:/var/www/html
 
@@ -34,6 +38,8 @@ services:
       - .env
     ports:
       - "443:443"
+    networks:
+      - bridge_network
     volumes:
       - wp-data:/var/www/html
 
@@ -48,6 +54,8 @@ services:
       - .env
     ports:
       - "6379:6379"
+    networks:
+      - bridge_network
 
   ftp:
     depends_on:
@@ -62,6 +70,8 @@ services:
       - "21:21" # control
       - "20:20" # data active
       - "21100-21110:21100-21110" # data passive
+    networks:
+      - bridge_network
     volumes:
       - wp-data:/var/www/html
 
@@ -72,6 +82,8 @@ services:
     restart: always
     ports:
       - "8080:80"
+    networks:
+      - bridge_network
 
   adminer:
     depends_on:
@@ -82,6 +94,8 @@ services:
     restart: always
     ports:
       - "8081:8080"
+    networks:
+      - bridge_network
 
   cadvisor:
     build: ./requirements/bonus/cadvisor
@@ -90,11 +104,17 @@ services:
     restart: always
     ports:
       - "8082:8080"
+    networks:
+      - bridge_network
     volumes:
       - /:/rootfs:ro            # disk usage of host
       - /var/run:/var/run:ro    # find and talk to Docker
       - /sys:/sys:ro            # CPU, RAM, network from kernel
       - /var/lib/docker/:/var/lib/docker:ro  # container names, metadata, image sizes
+
+networks:
+  bridge_network:
+    driver: bridge
 
 volumes:
   wp-data:
