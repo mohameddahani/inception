@@ -74,6 +74,7 @@ Key guarantees of the infrastructure:
 inception/
 ├── DEV_DOC.md
 ├── USER_DOC.md
+├── DOCKER_DEEP_DIVE.md
 ├── Makefile
 ├── README.md
 └── srcs/
@@ -150,30 +151,31 @@ Populate it with the following variables:
 
 ```env
 # Domain
-DOMAIN_NAME=mdahani.42.fr
+DOMAIN_NAME=your_domain_here
 
 # MariaDB
 DB_HOST=mariadb
-DB_NAME=my_wordpress_db
-DB_USER=my_wordpress_usr
+DB_NAME=your_db_name
+DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 
 # WordPress
-WP_URL=https://mdahani.42.fr
-WP_TITLE=My Website
-WP_ADMIN_USER=mdahani
+WP_URL=https://your_domain_here
+WP_TITLE=Your Website Title
+WP_ADMIN_USER=your_admin_user
 WP_ADMIN_PASSWORD=your_admin_password
-WP_ADMIN_EMAIL=mdahani@student.1337.ma
-WP_USER=bounati
+WP_ADMIN_EMAIL=your_email@example.com
+
+WP_USER=your_user
 WP_USER_PASSWORD=your_user_password
-WP_USER_EMAIL=bounati@student.1337.ma
+WP_USER_EMAIL=user@example.com
 
 # Redis (bonus)
 WP_REDIS_HOST=redis
 WP_REDIS_PORT=6379
 
 # FTP (bonus)
-FTP_USER=ftp_mdahani
+FTP_USER=your_ftp_user
 FTP_PASSWORD=your_ftp_password
 ```
 
