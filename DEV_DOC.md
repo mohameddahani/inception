@@ -9,7 +9,6 @@
 - [Prerequisites](#prerequisites)
 - [Environment Setup](#environment-setup)
 - [Configuration Files](#configuration-files)
-- [Secrets Setup](#secrets-setup)
 - [Building and Launching](#building-and-launching)
 - [Makefile Reference](#makefile-reference)
 - [Managing Containers and Volumes](#managing-containers-and-volumes)
