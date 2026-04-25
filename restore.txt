@@ -1,2 +1,0 @@
-restor the user name from mdahani to mohamed-dahani
-remove the host (DNS LOCAL) from /etc/hosts
